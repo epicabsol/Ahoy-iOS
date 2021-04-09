@@ -28,6 +28,10 @@ class HomeViewController: UIViewController, UITableViewDataSource {
         
         // Set up the message table view to query this instance for data
         self.messageTableView.dataSource = self
+        
+        // Set up the pull-to-refresh action on the table view
+        self.messageTableView.refreshControl = UIRefreshControl()
+        self.messageTableView.refreshControl?.addTarget(self, action: #selector(tableRefreshPulled), for: .valueChanged)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -37,14 +41,21 @@ class HomeViewController: UIViewController, UITableViewDataSource {
     }
     
     public func refreshData() {
+        self.messageTableView.refreshControl?.beginRefreshing()
+        
         AhoyAPI.shared.getPostsBefore(endID: -1, max: 10, success: { posts, more in
             self.loadedPosts = posts
             
             DispatchQueue.main.async {
+                self.messageTableView.refreshControl?.endRefreshing()
                 self.messageTableView.reloadData()
             }
         }, failure: { error in
             NSLog("Failed to refresh data: \(error)")
+            
+            DispatchQueue.main.async {
+                self.messageTableView.refreshControl?.endRefreshing()
+            }
         })
     }
 
@@ -55,7 +66,7 @@ class HomeViewController: UIViewController, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell") as? PostCell else { return UITableViewCell() }
         
-        cell.post = self.loadedPosts[indexPath.row]
+        cell.post = self.loadedPosts[self.loadedPosts.count - indexPath.row - 1]
         return cell
     }
     
@@ -75,10 +86,12 @@ class HomeViewController: UIViewController, UITableViewDataSource {
             
             self.sending = false
             
-            DispatchQueue.main.async {
-                
-            }
+            NSLog("Failed to send message: \(error)")
         })
+    }
+    
+    @objc func tableRefreshPulled() {
+        self.refreshData()
     }
 }
 

@@ -75,7 +75,7 @@ class AhoyAPI {
     
     public func getPostsBefore(endID: Int, max: Int, success: @escaping ([Post], Bool) -> Void, failure: @escaping (Error) -> Void) {
         
-        guard let request = RequestInfo(urlString: "\(AhoyAPI.host)/api/posts/after", method: .get, queryParameters: [ "end": "\(endID)", "count": "\(max)" ], headers: nil, body: nil) else {
+        guard let request = RequestInfo(urlString: "\(AhoyAPI.host)/api/posts/before", method: .get, queryParameters: [ "end": "\(endID)", "count": "\(max)" ], headers: nil, body: nil) else {
             failure(APIError(message: "Invalid request."))
             return
         }
