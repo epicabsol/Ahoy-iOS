@@ -73,6 +73,28 @@ class AhoyAPI {
         }, failure: failure)
     }
     
+    public func getPostsBefore(endID: Int, max: Int, success: @escaping ([Post], Bool) -> Void, failure: @escaping (Error) -> Void) {
+        
+        guard let request = RequestInfo(urlString: "\(AhoyAPI.host)/api/posts/after", method: .get, queryParameters: [ "end": "\(endID)", "count": "\(max)" ], headers: nil, body: nil) else {
+            failure(APIError(message: "Invalid request."))
+            return
+        }
+        
+        self.sendRequest(request, success: { data, statusCode in
+            if let data = data as? [String: Any], let posts = data["posts"] as? [[String: Any]], let more = data["more"] as? Bool {
+                success(posts.compactMap({ dict in
+                    Post(dictionary: dict)
+                }), more)
+            } else {
+                failure(APIError(message: "Couldn't decode posts."))
+            }
+        }, failure: failure)
+    }
+    
+    public func getPostsAfter(startID: Int, max: Int, success: ([Post], Bool) -> Void, failure: (Error) -> Void) {
+        
+    }
+    
     private func sendRequest(_ request: RequestInfo, success: @escaping (Any?, Int) -> Void, failure: @escaping (Error) -> Void) {
         
         var urlRequest = URLRequest(url: request.url)

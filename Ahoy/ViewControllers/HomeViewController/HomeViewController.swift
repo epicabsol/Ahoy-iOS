@@ -21,13 +21,31 @@ class HomeViewController: UIViewController, UITableViewDataSource {
         // Do any additional setup after loading the view.
         
         // TEMP: Load some example posts
-        self.loadedPosts.append(Post(id: 10, author: "Peter", content: "Have you met Joe?"))
+        /*self.loadedPosts.append(Post(id: 10, author: "Peter", content: "Have you met Joe?"))
         self.loadedPosts.append(Post(id: 12, author: "Steve Jobs", content: "Who is Joe?"))
         self.loadedPosts.append(Post(id: 15, author: "Peter", content: "He's the new marketing intern, you should go introduce yourself during your lunch break."))
-        self.loadedPosts.append(Post(id: 20, author: "Steve Jobs", content: "What a great idea! I think I will."))
+        self.loadedPosts.append(Post(id: 20, author: "Steve Jobs", content: "What a great idea! I think I will."))*/
         
         // Set up the message table view to query this instance for data
         self.messageTableView.dataSource = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        refreshData()
+    }
+    
+    public func refreshData() {
+        AhoyAPI.shared.getPostsBefore(endID: -1, max: 10, success: { posts, more in
+            self.loadedPosts = posts
+            
+            DispatchQueue.main.async {
+                self.messageTableView.reloadData()
+            }
+        }, failure: { error in
+            NSLog("Failed to refresh data: \(error)")
+        })
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
