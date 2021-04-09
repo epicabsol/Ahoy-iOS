@@ -10,8 +10,11 @@ import UIKit
 class HomeViewController: UIViewController, UITableViewDataSource {
     
     private var loadedPosts = [Post]()
+    private var sending = false
 
     @IBOutlet weak var messageTableView: UITableView!
+    @IBOutlet weak var contentTextField: UITextField!
+    @IBOutlet weak var sendButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +39,28 @@ class HomeViewController: UIViewController, UITableViewDataSource {
         
         cell.post = self.loadedPosts[indexPath.row]
         return cell
+    }
+    
+    @IBAction func sendButtonTouched(_ sender: Any) {
+        guard let content = self.contentTextField.text, content.count > 0, !self.sending else { return }
+        
+        AhoyAPI.shared.createPost(author: "Ahoy iOS User", content: content, success: { post in
+            
+            self.sending = false
+            
+            DispatchQueue.main.async {
+                self.contentTextField.text = ""
+                self.loadedPosts.append(post)
+                self.messageTableView.reloadData()
+            }
+        }, failure: { error in
+            
+            self.sending = false
+            
+            DispatchQueue.main.async {
+                
+            }
+        })
     }
 }
 

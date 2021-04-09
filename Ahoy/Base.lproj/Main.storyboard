@@ -22,10 +22,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="500" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FqW-UO-kKR">
+                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="500" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FqW-UO-kKR">
                                 <rect key="frame" x="358" y="56" width="31" height="32"/>
                                 <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
                                 <state key="normal" image="paperplane" catalog="system"/>
+                                <connections>
+                                    <action selector="sendButtonTouched:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zHm-dF-XWa"/>
+                                </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="sC3-j2-02p">
                                 <rect key="frame" x="25" y="104" width="364" height="733"/>
@@ -109,7 +112,9 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="contentTextField" destination="k3D-jt-hDI" id="9Z3-rw-s8u"/>
                         <outlet property="messageTableView" destination="sC3-j2-02p" id="Ub9-V1-a5J"/>
+                        <outlet property="sendButton" destination="FqW-UO-kKR" id="KhW-I8-Fu1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
